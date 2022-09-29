@@ -20,14 +20,18 @@ public class ListController {
 		// Then, add the new employee to the employees list!
 		// for initial demo and debugging, set DEBUG to true;
 		if (DEBUG) System.out.println(employees);
-
+		employees.add(new Employee(name, SSN, Double.parseDouble(salary), Integer.parseInt(years)));
 	}
 	
 	
 	// returns a string array of the employee information to be viewed
 	public String[] getEmployeeDataStr() {
 		// temporary placeholder for compilation reasons - will remove later...
-		return(new String[1]);
+		String[] array = new String[employees.size()];
+		for (int i = 0; i < array.length; i++) {
+			array[i] = employees.get(i) + "";
+		}
+		return array;
 		
 	}
 }
