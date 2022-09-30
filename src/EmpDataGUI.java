@@ -89,6 +89,10 @@ public class EmpDataGUI extends Application {
         main.add(buttonViewEmployees, 1, 4);
         buttonViewEmployees.setOnAction(e -> {primaryStage.setScene(scene2); viewEmployeeDB();});
         
+     // TODO #Part_3: Save/Restore
+        Button buttonSaveDB = new Button("Save DB");
+        main.add(buttonSaveDB, 0, 5);
+//        buttonSaveDB.setOnAction(e -> controller.);
     }
 
     // don't worry about this yet - part of part2
