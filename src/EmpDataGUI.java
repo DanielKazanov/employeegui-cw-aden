@@ -7,6 +7,8 @@ import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.geometry.HPos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -59,7 +61,8 @@ public class EmpDataGUI extends Application {
         // Create Add Employee Button, and write the setOnAction handler to call the controller
     	// to add the new Employee data
     Button button = new Button("Add Employee");
-    button.setOnAction(e -> controller.addEmployee(Name.getText(), SSN.getText(), Salary.getText(), Years.getText()));
+    //button.setOnAction(e -> controller.addEmployee(Name.getText(), SSN.getText(), Salary.getText(), Years.getText()));
+    button.setOnAction(e -> validateAndAddEmployee());
 ;	// TODO #6
     	// add all the labels, textfields and button to gridpane main. refer to the slide
     	// for ordering...
@@ -92,16 +95,41 @@ public class EmpDataGUI extends Application {
      // TODO #Part_3: Save/Restore
         Button buttonSaveDB = new Button("Save DB");
         main.add(buttonSaveDB, 0, 5);
-//        buttonSaveDB.setOnAction(e -> controller.);
+        buttonSaveDB.setOnAction(e -> controller.saveEmployeeDataBase());
+        Button restoreDB = new Button("Restore DB");
+        main.add(restoreDB, 1, 5);
+        restoreDB.setOnAction(e -> controller.restoreEmployeeDataBase());
     }
 
     // don't worry about this yet - part of part2
     private void viewEmployeeDB() {
     	String[] empDataStr = controller.getEmployeeDataStr();
-//    	ListView<String> listView = new ListView<>(FXCollections.observableArrayList(empDataStr));
     	ListView listView = new ListView(FXCollections.observableArrayList(empDataStr));
     	listView.setPrefWidth(400);
     	scroll.setContent(listView);
+    }
+    
+    private void validateAndAddEmployee() {
+    	String name = Name.getText();
+    	String ssn = SSN.getText();
+    	String salary = Salary.getText();
+    	String years = Years.getText();
+    	if (name.equals("") || ssn.equals("") || salary.equals("") || years.equals("")) {
+    		Alert alert = new Alert(AlertType.WARNING);
+    		alert.setHeaderText("Add Employee Failed");
+    		alert.setContentText("Make sure that all fields are populated");
+    		alert.showAndWait();
+    		return;
+    	}
+    	controller.addEmployee(name, ssn, salary, years);
+    	clearTextFields();
+    }
+    
+    private void clearTextFields() {
+    	Name.setText("");
+    	SSN.setText("");
+    	Salary.setText("");
+    	Years.setText("");
     }
     
   /**
