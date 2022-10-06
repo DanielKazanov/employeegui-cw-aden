@@ -96,9 +96,9 @@ public class EmpDataGUI extends Application {
         Button buttonSaveDB = new Button("Save DB");
         main.add(buttonSaveDB, 0, 5);
         buttonSaveDB.setOnAction(e -> controller.saveEmployeeDataBase());
-        Button restoreDB = new Button("Restore DB");
-        main.add(restoreDB, 1, 5);
-        restoreDB.setOnAction(e -> controller.restoreEmployeeDataBase());
+//        Button restoreDB = new Button("Restore DB");
+//        main.add(restoreDB, 1, 5);
+//        restoreDB.setOnAction(e -> controller.restoreEmployeeDataBase());
     }
 
     // don't worry about this yet - part of part2

@@ -16,6 +16,7 @@ public class ListController {
 	
 	public ListController () {
 		employees = new ArrayList<Employee>();
+		restoreEmployeeDataBase();
 	}
 
 	// adds a new employee
@@ -48,7 +49,7 @@ public class ListController {
 		File file = myFileIO.getFileHandle("empDB.dat");
 		int fileStatus = myFileIO.checkTextFile(file, false);
 		
-		if (fileStatus != MyFileIO.FILE_OK && fileStatus != MyFileIO.WRITE_EXISTS) {
+		if (fileStatus != MyFileIO.FILE_OK) {
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.setHeaderText("Failed to save");
 			alert.setContentText("Something went wrong with opening save file, status: " + fileStatus);
@@ -61,7 +62,7 @@ public class ListController {
 		try {
 			for (int i = 0; i < employees.size(); i++) { // Employee employee : employees
 				Employee employee = employees.get(i);
-				bufferedWriter.write(String.format("|%s,%s,%f,%d|\n",employee.getName(),employee.getSSN(),employee.getSalary(),employee.getYears()));
+				bufferedWriter.write(String.format("%s|,|%s|,|%f|,|%d\n",employee.getName(),employee.getSSN(),employee.getSalary(),employee.getYears()));
 			}
 			bufferedWriter.close();
 		} catch (IOException ev) {			
@@ -75,9 +76,12 @@ public class ListController {
 	public void restoreEmployeeDataBase() {
 		MyFileIO myFileIO = new MyFileIO();
 		File file = myFileIO.getFileHandle("empDB.dat");
+		if (!file.exists()) {
+			return;
+		}
 		int fileStatus = myFileIO.checkTextFile(file, true);
 		
-		if (fileStatus != MyFileIO.FILE_OK) {
+		if (fileStatus != MyFileIO.FILE_OK || fileStatus == MyFileIO.FILE_DOES_NOT_EXIST) {
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.setHeaderText("Failed to restore employee data base");
 			alert.setContentText("Something went wrong with opening save file, status: " + fileStatus);
@@ -90,7 +94,7 @@ public class ListController {
 		try {
 			String line = bufferedReader.readLine();
 			while (line != null && !line.equals("")) {
-				String[] tokens = line.substring(1, line.length() - 1).split(",");
+				String[] tokens = line.split("(\\|,\\|)");
 				addEmployee(tokens[0], tokens[1], tokens[2], tokens[3]);
 				line = bufferedReader.readLine();
 			}
