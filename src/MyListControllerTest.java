@@ -183,6 +183,7 @@ class MyListControllerTest {
 		System.out.println("Error Checking Test: detect if a required field is empty");
 		msg = ctrl.addEmployee("","Murray","111-22-3333","58","he/him","500000","26","Engineering");
 		assertNotEquals("",msg);
+		
 		assertEquals(numEmployees,ctrl.getNumEmployees());
 		System.out.println(msg);
 		msg = ctrl.addEmployee("Scott","","111-22-3333","58","he/him","500000","26","Engineering");
