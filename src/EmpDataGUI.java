@@ -171,11 +171,31 @@ public class EmpDataGUI extends Application {
     	RadioButton dept = (RadioButton)toggleGroup.getSelectedToggle();
     	
     	String s = controller.addEmployee(firstName, lastName, ssn, age, pronouns, salary, years, dept.getText());
-    	if (s.equals("")) {
+    	
+    	if (s.equals("Error: populated fields")) {
+    		Alert alert = new Alert(AlertType.WARNING);
+    		alert.setHeaderText("Add Employee Failed");
+    		alert.setContentText("Make sure that all fields are populated (with the exception of pronouns)");
+    		alert.showAndWait();
+    		return;
+    	} else if (s.equals("Error: Formatting")) {
+     		Alert alert = new Alert(AlertType.WARNING);
+    		alert.setHeaderText("Add Employee Failed");
+    		alert.setContentText("Make sure formatting is correct.");
+    		alert.showAndWait();
+    	} else if (s.equals("Error: duplicate SSN")) {
+     		Alert alert = new Alert(AlertType.WARNING);
+    		alert.setHeaderText("Add Employee Failed");
+    		alert.setContentText("No duplicate SSN is allowed.");
+    		alert.showAndWait();
+    		return;
+    	} else if (s.equals("")) {
         	clearTextFields();
         	engineeringRadioButton.setSelected(true);
+        	return;
     	}
     }
+    
     
     
     private void clearTextFields() {

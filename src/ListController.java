@@ -40,13 +40,14 @@ public class ListController {
 		// Then, add the new employee to the employees list!
 		// for initial demo and debugging, set DEBUG to true;
 		if (DEBUG) System.out.println(employees);
-    	
+
 		if (!populatedFields(firstName, lastName, ssn, age, salary, years, dept).equals("")) {
-			return "Error";
+			return "Error: populated fields";
 		} else if (!formatting(firstName, lastName, ssn, age, salary, years, dept).equals("")) {
-			return "Error";
+			System.out.println("got here");
+			return "Error: Formatting";
 		} else if (!duplicateSsn(firstName, lastName, ssn, age, salary, years, dept).equals("")) {
-			return "Error";
+			return "Error: duplicate SSN";
 		}
 		employees.add(new Employee(firstName, lastName, ssn, Integer.parseInt(age), pronouns, Double.parseDouble(salary), Integer.parseInt(years), dept));
 		return "";
@@ -54,10 +55,6 @@ public class ListController {
 	
     public String duplicateSsn(String lastName, String firstName, String ssn, String age, String salary, String years, String dept) {
     	if (!checkDuplicateSSN(ssn)) {
-     		Alert alert = new Alert(AlertType.WARNING);
-    		alert.setHeaderText("Add Employee Failed");
-    		alert.setContentText("No duplicate SSN is allowed.");
-    		alert.showAndWait();
     		return "Duplicate SSN";
     	}
     	return "";
@@ -65,17 +62,9 @@ public class ListController {
     
     public String formatting(String lastName, String firstName, String ssn, String age, String salary, String years, String dept) {
     	if (!salary.matches("\\d+")) {
-     		Alert alert = new Alert(AlertType.WARNING);
-    		alert.setHeaderText("Add Employee Failed");
-    		alert.setContentText("Make sure formatting is correct.");
-    		alert.showAndWait();
     		return "Formatting incorrect.";
     	}
     	if (!lastName.matches("\\D+") || !firstName.matches("\\D+") || !ssn.matches("\\d{3}-\\d{2}-\\d{4}") || !age.matches("\\d+") || !(Integer.parseInt(salary) >= 35000 && Integer.parseInt(salary) <= 20000000) || !years.matches("\\d+") || !dept.matches("\\D+")) {
-     		Alert alert = new Alert(AlertType.WARNING);
-    		alert.setHeaderText("Add Employee Failed");
-    		alert.setContentText("Make sure formatting is correct.");
-    		alert.showAndWait();
     		return "Formatting incrorrect.";
     	}
     	return "";
@@ -83,10 +72,6 @@ public class ListController {
     
     public String populatedFields(String lastName, String firstName, String ssn, String age, String salary, String years, String dept) {
     	if (lastName.equals("") || firstName.equals("") || ssn.equals("") || age.equals("") || salary.equals("") || years.equals("") || dept.equals("")) {
-    		Alert alert = new Alert(AlertType.WARNING);
-    		alert.setHeaderText("Add Employee Failed");
-    		alert.setContentText("Make sure that all fields are populated (with the exception of pronouns)");
-    		alert.showAndWait();
     		return "Not all fields populated.";
     	}
     	return "";
@@ -118,7 +103,7 @@ public class ListController {
 		File file = myFileIO.getFileHandle("empDB.dat");
 		int fileStatus = myFileIO.checkTextFile(file, false);
 		
-		if (fileStatus != MyFileIO.FILE_OK) {
+		if (fileStatus != MyFileIO.FILE_OK && fileStatus != MyFileIO.WRITE_EXISTS) {
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.setHeaderText("Failed to save");
 			alert.setContentText("Something went wrong with opening save file, status: " + fileStatus);
@@ -159,12 +144,11 @@ public class ListController {
 		}
 		
 		BufferedReader bufferedReader = myFileIO.openBufferedReader(file);
-		
 		try {
 			String line = bufferedReader.readLine();
 			while (line != null && !line.equals("")) {
 				String[] tokens = line.split("(\\|,\\|)");
-				addEmployee(tokens[0], tokens[1], tokens[2], tokens[3], tokens[4], tokens[5], tokens[6], tokens[7]);
+				addEmployee(tokens[0], tokens[1], tokens[2], tokens[3], tokens[4], Math.round(Double.parseDouble(tokens[5])) + "", tokens[6], tokens[7]);
 				line = bufferedReader.readLine();
 			}
 			bufferedReader.close();

@@ -214,10 +214,49 @@ class MyListControllerTest {
 	 */
 	@Test
 	@Order(2)
-	@Disabled
+//	@Disabled
 	void test_AddWithBadSSN() {
 		ListController ctrl = new ListController();
 		int numEmployees = ctrl.getNumEmployees();
+		assertEquals(0, numEmployees);
+		String msg = "";
+		System.out.println("Error Checking Test: detect if SSN format is incorrect");
+		
+		msg = ctrl.addEmployee("Daniel", "Kazanov", "111-11-11111", "16", "He/Him", "45000", "1", "Engineering");
+		assertNotEquals("", msg);
+		assertEquals(numEmployees, ctrl.getNumEmployees());
+		System.out.println(msg);
+		
+		msg = ctrl.addEmployee("Daniel", "Kazanov", "111-11-111", "16", "He/Him", "45000", "1", "Engineering");
+		assertNotEquals("", msg);
+		assertEquals(numEmployees, ctrl.getNumEmployees());
+		System.out.println(msg);
+		
+		msg = ctrl.addEmployee("Daniel", "Kazanov", "", "16", "He/Him", "45000", "1", "Engineering");
+		assertNotEquals("", msg);
+		assertEquals(numEmployees, ctrl.getNumEmployees());
+		System.out.println(msg);
+		
+		msg = ctrl.addEmployee("Daniel", "Kazanov", "111111111", "16", "He/Him", "45000", "1", "Engineering");
+		assertNotEquals("", msg);
+		assertEquals(numEmployees, ctrl.getNumEmployees());
+		System.out.println(msg);
+		
+		msg = ctrl.addEmployee("Daniel", "Kazanov", "11111111111", "16", "He/Him", "45000", "1", "Engineering");
+		assertNotEquals("", msg);
+		assertEquals(numEmployees, ctrl.getNumEmployees());
+		System.out.println(msg);
+		
+		msg = ctrl.addEmployee("Daniel", "Kazanov", "111.11.1111", "16", "He/Him", "45000", "1", "Engineering");
+		assertNotEquals("", msg);
+		assertEquals(numEmployees, ctrl.getNumEmployees());
+		System.out.println(msg);
+		
+		msg = ctrl.addEmployee("Daniel", "Kazanov", "111a11a1111", "16", "He/Him", "45000", "1", "Engineering");
+		assertNotEquals("", msg);
+		assertEquals(numEmployees, ctrl.getNumEmployees());
+		System.out.println(msg);
+		
 		System.out.println("Testing for detection of incorrect SSN formats PASSED");
 	}
 	
@@ -226,10 +265,28 @@ class MyListControllerTest {
 	 */
 	@Test
 	@Order(3)
-	@Disabled
+//	@Disabled
 	void test_AddWithDuplicateSSN() {
 		ListController ctrl = new ListController();
 		int numEmployees = ctrl.getNumEmployees();
+		assertEquals(0, numEmployees);
+		String msg = "";
+		System.out.println("Error Checking Test: detect if SSN is duplicate");
+		
+		ctrl.addEmployee("Daniel", "Kazanov", "111-11-1111", "16", "He/Him", "45000", "1", "Engineering");
+		numEmployees+=1;
+		
+		
+		msg = ctrl.addEmployee("Daniel", "Kazanov", "111-11-1111", "16", "He/Him", "45000", "1", "Engineering");
+		assertNotEquals("", msg);
+		assertEquals(numEmployees, ctrl.getNumEmployees());
+		System.out.println(msg);
+		
+		msg = ctrl.addEmployee("Daniel", "Kazanov", "111-11-1112", "16", "He/Him", "45000", "1", "Engineering");
+		assertEquals("", msg);
+		assertEquals(numEmployees + 1, ctrl.getNumEmployees());
+		System.out.println(msg);
+		
 		System.out.println("Testing for detection of duplicate SSN formats PASSED");
 	}
 	
@@ -238,7 +295,7 @@ class MyListControllerTest {
 	 */
 	@Test
 	@Order(4)
-	@Disabled
+//	@Disabled
 	void test_AddWithBadAge() {
 		ListController ctrl = new ListController();
 		int numEmployees = ctrl.getNumEmployees();
@@ -250,7 +307,7 @@ class MyListControllerTest {
 	 */
 	@Test
 	@Order(5)
-	@Disabled
+//	@Disabled
 	void test_AddWithBadSalary() {
 		ListController ctrl = new ListController();
 		int numEmployees = ctrl.getNumEmployees();
@@ -262,7 +319,7 @@ class MyListControllerTest {
 	 */
 	@Test
 	@Order(6)
-	@Disabled
+//	@Disabled
 	void test_AddWithBadYears() {
 		ListController ctrl = new ListController();
 		int numEmployees = ctrl.getNumEmployees();
