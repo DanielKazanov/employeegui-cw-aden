@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,6 +17,10 @@ import myfileio.MyFileIO;
 public class ListController {
 	private ArrayList<Employee> employees;
 	private static final boolean DEBUG = true;
+	public final int MIN_AGE = 16;
+	public final int MAX_AGE = 90;
+	public final double MIN_SALARY = 30000.00;
+	public final double MAX_SALARY = 20000000.00;
 	
 	public ArrayList getEmployees() {
 		return employees;
@@ -44,28 +49,38 @@ public class ListController {
 		if (!populatedFields(firstName, lastName, ssn, age, salary, years, dept).equals("")) {
 			return "Error: populated fields";
 		} else if (!formatting(firstName, lastName, ssn, age, salary, years, dept).equals("")) {
-			System.out.println("got here");
 			return "Error: Formatting";
-		} else if (!duplicateSsn(firstName, lastName, ssn, age, salary, years, dept).equals("")) {
+		} else if (!ageCheck(age, years).equals("")) {
+			return "Error: Age incorrect.";
+		} else if (!duplicateSsn(ssn).equals("")) {
 			return "Error: duplicate SSN";
 		}
 		employees.add(new Employee(firstName, lastName, ssn, Integer.parseInt(age), pronouns, Double.parseDouble(salary), Integer.parseInt(years), dept));
 		return "";
 	}
 	
-    public String duplicateSsn(String lastName, String firstName, String ssn, String age, String salary, String years, String dept) {
-    	if (!checkDuplicateSSN(ssn)) {
-    		return "Duplicate SSN";
+    public String duplicateSsn(String ssn) {
+    	for (int i = 0; i < employees.size(); i++) {
+    		if (ssn.equals(employees.get(i).getSsn())) {
+    			return "Error: duplicate SSN";
+    		}
     	}
     	return "";
     }
     
     public String formatting(String lastName, String firstName, String ssn, String age, String salary, String years, String dept) {
-    	if (!salary.matches("\\d+")) {
+    	if (!salary.matches("\\d+\\.?\\d+")) {
     		return "Formatting incorrect.";
     	}
-    	if (!lastName.matches("\\D+") || !firstName.matches("\\D+") || !ssn.matches("\\d{3}-\\d{2}-\\d{4}") || !age.matches("\\d+") || !(Integer.parseInt(salary) >= 35000 && Integer.parseInt(salary) <= 20000000) || !years.matches("\\d+") || !dept.matches("\\D+")) {
+    	if (!lastName.matches("\\D+") || !firstName.matches("\\D+") || !ssn.matches("\\d{3}-\\d{2}-\\d{4}") || !age.matches("\\d+") || !(Double.parseDouble(salary) >= MIN_SALARY && Double.parseDouble(salary) <= MAX_SALARY) || !years.matches("\\d+") || !dept.matches("\\D+")) {
     		return "Formatting incrorrect.";
+    	}
+    	return "";
+    }
+    
+    public String ageCheck (String age, String years) {
+    	if (Integer.parseInt(age) - Integer.parseInt(years) < MIN_AGE) {
+    		return "Age incorrect.";
     	}
     	return "";
     }
@@ -75,15 +90,6 @@ public class ListController {
     		return "Not all fields populated.";
     	}
     	return "";
-    }
-    
-    private boolean checkDuplicateSSN(String ssn) {
-    	for (int i = 0; i < employees.size(); i++) {
-    		if (((Employee)employees.get(i)).getSsn().equals(ssn)) {
-    			return false;
-    		}
-    	}
-    	return true;
     }
 	
 	
@@ -107,16 +113,19 @@ public class ListController {
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.setHeaderText("Failed to save");
 			alert.setContentText("Something went wrong with opening save file, status: " + fileStatus);
-			alert.showAndWait();	
+			alert.showAndWait();
 			return;
 		}
 		
 		BufferedWriter bufferedWriter = myFileIO.openBufferedWriter(file);
 		
 		try {
+			sortByID();
 			for (int i = 0; i < employees.size(); i++) {
 				Employee employee = employees.get(i);
-				bufferedWriter.write(String.format("%s|,|%s|,|%s|,|%d|,|%s|,|%f|,|%d|,|%s\n",employee.getFirstName(), employee.getLastName(), employee.getSsn(), employee.getAge(), employee.getPronouns(), employee.getSalary(), employee.getYears(), employee.getDept()));
+				//bufferedWriter.write(String.format("%d|,|%s|,|%s|,|%s|,|%d|,|%s|,|%f|,|%d|,|%s\n", employee.getEmpID(), employee.getFirstName(), employee.getLastName(), employee.getSsn(), employee.getAge(), employee.getPronouns(), employee.getSalary(), employee.getYears(), employee.getDept()));
+				bufferedWriter.write(employee.getEmpID()+"|,|"+employee.getFirstName()+"|,|"+employee.getLastName()+"|,|"+employee.getSsn()+"|,|"+employee.getAge()+"|,|"+employee.getPronouns()+"|,|"+String.format("%.2f", ((long) (employee.getSalary()*100)/100.0))+"|,|"+employee.getYears()+"|,|"+employee.getDept()+"\n");
+				
 			}
 			bufferedWriter.close();
 		} catch (IOException ev) {			
@@ -148,7 +157,7 @@ public class ListController {
 			String line = bufferedReader.readLine();
 			while (line != null && !line.equals("")) {
 				String[] tokens = line.split("(\\|,\\|)");
-				addEmployee(tokens[0], tokens[1], tokens[2], tokens[3], tokens[4], Math.round(Double.parseDouble(tokens[5])) + "", tokens[6], tokens[7]);
+				addEmployee(tokens[1], tokens[2], tokens[3], tokens[4], tokens[5], Math.round(Double.parseDouble(tokens[6])) + "", tokens[7], tokens[8]);
 				line = bufferedReader.readLine();
 			}
 			bufferedReader.close();
@@ -166,11 +175,11 @@ public class ListController {
 	
 	private class ByName implements Comparator<Employee> {
 		public int compare(Employee o1, Employee o2) {
-			if (o1.getLastName().equals(o2.getLastName())) {
-				return o2.getFirstName().compareTo(o2.getFirstName());
+			if (o1.getLastName().compareTo(o2.getLastName()) == 0) {
+				return o1.getFirstName().compareTo(o2.getFirstName());
+			} else {
+				return o1.getLastName().compareTo(o2.getLastName());
 			}
-			
-			return o1.getLastName().compareTo(o2.getLastName());
 		}
 	}
 	

@@ -178,6 +178,11 @@ public class EmpDataGUI extends Application {
     		alert.setContentText("Make sure that all fields are populated (with the exception of pronouns)");
     		alert.showAndWait();
     		return;
+    	}  else if (s.equals("Error: Age incorrect.")) {
+     		Alert alert = new Alert(AlertType.WARNING);
+    		alert.setHeaderText("Add Employee Failed");
+    		alert.setContentText("Make sure age is correct.");
+    		alert.showAndWait();
     	} else if (s.equals("Error: Formatting")) {
      		Alert alert = new Alert(AlertType.WARNING);
     		alert.setHeaderText("Add Employee Failed");
@@ -189,6 +194,11 @@ public class EmpDataGUI extends Application {
     		alert.setContentText("No duplicate SSN is allowed.");
     		alert.showAndWait();
     		return;
+    	} else if (Integer.parseInt(age) < controller.MIN_AGE || Integer.parseInt(age) > controller.MAX_AGE) {
+    		System.out.println("Check age.");
+        	clearTextFields();
+        	engineeringRadioButton.setSelected(true);
+        	return;
     	} else if (s.equals("")) {
         	clearTextFields();
         	engineeringRadioButton.setSelected(true);
