@@ -273,18 +273,19 @@ class MyListControllerTest {
 		String msg = "";
 		System.out.println("Error Checking Test: detect if SSN is duplicate");
 		
-		ctrl.addEmployee("Daniel", "Kazanov", "111-11-1111", "16", "He/Him", "45000", "1", "Engineering");
+		ctrl.addEmployee("Daniel", "Kazanov", "111-11-1111", "35", "He/Him", "45000", "1", "Engineering");
 		numEmployees+=1;
 		
 		
-		msg = ctrl.addEmployee("Daniel", "Kazanov", "111-11-1111", "16", "He/Him", "45000", "1", "Engineering");
+		msg = ctrl.addEmployee("Daniel", "Kazanov", "111-11-1111", "35", "He/Him", "45000", "1", "Engineering");
 		assertNotEquals("", msg);
 		assertEquals(numEmployees, ctrl.getNumEmployees());
 		System.out.println(msg);
 		
-		msg = ctrl.addEmployee("Daniel", "Kazanov", "111-11-1112", "16", "He/Him", "45000", "1", "Engineering");
+		msg = ctrl.addEmployee("Daniel", "Kazanov", "111-11-1112", "35", "He/Him", "45000", "1", "Engineering");
 		assertEquals("", msg);
-		assertEquals(numEmployees + 1, ctrl.getNumEmployees());
+		numEmployees+=1;
+		assertEquals(numEmployees, ctrl.getNumEmployees());
 		System.out.println(msg);
 		
 		System.out.println("Testing for detection of duplicate SSN formats PASSED");
